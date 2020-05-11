@@ -14,7 +14,7 @@
   <ItemGroup>
     <PackageReference Include="AngleSharp" Version="0.13.0" />
     <PackageReference Include="CommandLineParser" Version="2.6.0" />
-    <PackageReference Include="Discord.Net" Version="2.1.1" />
+    <PackageReference Include="Discord.Net" Version="2.2.0" />
     <PackageReference Include="CoreCLR-NCalc" Version="2.2.63" />
     <PackageReference Include="Google.Apis.Urlshortener.v1" Version="1.41.1.138" />
     <PackageReference Include="Google.Apis.YouTube.v3" Version="1.41.1.1699" />
