@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <OutputType>exe</OutputType>
+    <OutputType>Exe</OutputType>
     <ApplicationIcon>nadeko_icon.ico</ApplicationIcon>
     <LangVersion>latest</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -15,9 +15,8 @@
     <Version Condition=" '$(Version)' == '' ">$(VersionPrefix)</Version>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Discord.Net" Version="2.2.0" />
     <PackageReference Include="Nancy" Version="2.0.0" />
-    <PackageReference Include="NLog" Version="4.6.7" />
+    <PackageReference Include="NLog" Version="4.7.0" />
   </ItemGroup>
 
   <ItemGroup>

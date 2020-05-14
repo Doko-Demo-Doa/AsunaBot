@@ -1,7 +1,6 @@
-﻿using NadekoBot.Core.Services.Database.Models;
-using System.Linq;
+﻿using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
+using NadekoBot.Core.Services.Database.Models;
 
 namespace NadekoBot.Core.Services.Database.Repositories.Impl
 {
@@ -57,11 +56,13 @@ namespace NadekoBot.Core.Services.Database.Repositories.Impl
                 .Count() + 1;
         }
 
+        [System.Obsolete]
         public void ResetGuildUserXp(ulong userId, ulong guildId)
         {
             _context.Database.ExecuteSqlCommand($"DELETE FROM UserXpStats WHERE UserId={userId} AND GuildId={guildId};");
         }
 
+        [System.Obsolete]
         public void ResetGuildXp(ulong guildId)
         {
             _context.Database.ExecuteSqlCommand($"DELETE FROM UserXpStats WHERE GuildId={guildId};");

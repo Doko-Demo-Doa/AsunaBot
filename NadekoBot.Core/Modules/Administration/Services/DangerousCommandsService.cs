@@ -38,6 +38,7 @@ DELETE FROM Clubs;";
             _db = db;
         }
 
+        [System.Obsolete]
         public async Task<int> ExecuteSql(string sql)
         {
             int res;
