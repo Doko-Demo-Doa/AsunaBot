@@ -1,7 +1,7 @@
 #define sysfolder "system"
 #define version GetEnv("NADEKOBOT_INSTALL_VERSION")
-#define target "win7-x64"
-#define platform "netcoreapp2.1"
+#define target "macos-x64"
+#define platform "netcoreapp3.1"
 
 [Setup]
 AppName=NadekoBot
