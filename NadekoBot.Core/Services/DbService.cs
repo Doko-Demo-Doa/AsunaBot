@@ -32,7 +32,7 @@ namespace NadekoBot.Core.Services
             options = optionsBuilder.Options;
 
             optionsBuilder = new DbContextOptionsBuilder<NadekoContext>();
-            optionsBuilder.UseSqlite(builder.ToString(), x => x.SuppressForeignKeyEnforcement());
+            optionsBuilder.UseSqlite(builder.ToString());
             migrateOptions = optionsBuilder.Options;
         }
 
