@@ -32,27 +32,28 @@ namespace NadekoBot.Modules.Music.Common.SongResolver.Strategies
 
         private async Task<SongInfo> ResolveWithYtExplode(string query)
         {
-            YoutubeExplode.Models.Video video;
             var client = new YoutubeClient();
-            if (!YoutubeClient.TryParseVideoId(query, out var id))
-            {
-                _log.Info("Searching for video");
-                var videos = await client.SearchVideosAsync(query, 1).ConfigureAwait(false);
+            YoutubeExplode.Videos.Video video = await client.Videos.GetAsync(query);
+            
+            //if (!client.Videos.GetAsync(query, out var id))
+            //{
+            //    _log.Info("Searching for video");
+            //    var videos = await client.SearchVideosAsync(query, 1).ConfigureAwait(false);
 
-                video = videos.FirstOrDefault();
-            }
-            else
-            {
-                _log.Info("Getting video with id");
-                video = await client.GetVideoAsync(id).ConfigureAwait(false);
-            }
+            //    video = videos.FirstOrDefault();
+            //}
+            //else
+            //{
+            //    _log.Info("Getting video with id");
+            //    video = await client.GetVideoAsync(id).ConfigureAwait(false);
+            //}
 
             if (video == null)
                 return null;
 
             _log.Info("Video found");
-            var streamInfo = await client.GetVideoMediaStreamInfosAsync(video.Id).ConfigureAwait(false);
-            var stream = streamInfo.Audio
+            var streamInfo = await client.Videos.Streams.GetManifestAsync(video.Id).ConfigureAwait(false);
+            var stream = streamInfo.GetAudio()
                 .OrderByDescending(x => x.Bitrate)
                 .FirstOrDefault();
 

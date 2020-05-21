@@ -216,7 +216,9 @@ namespace NadekoBot.Core.Services.Impl
             if (string.IsNullOrWhiteSpace(query))
                 throw new ArgumentNullException(nameof(query));
 
-            var req = cs.Cse.List(query);
+
+            var req = cs.Cse.List();
+            req.Q = query;
             req.Cx = search_engine_id;
             req.Num = 1;
             req.Fields = "items(image(contextLink,thumbnailLink),link)";

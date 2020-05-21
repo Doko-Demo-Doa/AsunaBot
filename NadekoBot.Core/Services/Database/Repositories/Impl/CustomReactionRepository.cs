@@ -18,7 +18,7 @@ namespace NadekoBot.Core.Services.Database.Repositories.Impl
 
         public IEnumerable<CustomReaction> ForId(ulong id)
         {
-            return _set.Where(x => x.GuildId == id)
+            return _set.AsQueryable().Where(x => x.GuildId == id)
                 .ToArray();
         }
 
@@ -34,13 +34,13 @@ namespace NadekoBot.Core.Services.Database.Repositories.Impl
         /// <returns></returns>
         public IEnumerable<CustomReaction> GetFor(IEnumerable<ulong> ids)
         {
-            return _set.Where(x => ids.Contains(x.GuildId.Value))
+            return _set.AsQueryable().Where(x => ids.Contains(x.GuildId.Value))
                 .ToArray();
         }
 
         public IEnumerable<CustomReaction> GetGlobal()
         {
-            return _set.Where(x => x.GuildId == null)
+            return _set.AsQueryable().Where(x => x.GuildId == null)
                 .ToArray();
         }
     }
