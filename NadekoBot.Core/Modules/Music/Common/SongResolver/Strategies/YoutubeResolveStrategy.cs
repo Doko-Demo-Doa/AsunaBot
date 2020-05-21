@@ -34,19 +34,6 @@ namespace NadekoBot.Modules.Music.Common.SongResolver.Strategies
         {
             var client = new YoutubeClient();
             YoutubeExplode.Videos.Video video = await client.Videos.GetAsync(query);
-            
-            //if (!client.Videos.GetAsync(query, out var id))
-            //{
-            //    _log.Info("Searching for video");
-            //    var videos = await client.SearchVideosAsync(query, 1).ConfigureAwait(false);
-
-            //    video = videos.FirstOrDefault();
-            //}
-            //else
-            //{
-            //    _log.Info("Getting video with id");
-            //    video = await client.GetVideoAsync(id).ConfigureAwait(false);
-            //}
 
             if (video == null)
                 return null;

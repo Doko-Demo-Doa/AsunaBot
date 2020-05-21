@@ -1,7 +1,6 @@
 ﻿using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Console;
 using NadekoBot.Core.Services.Database;
 using System;
 using System.IO;
@@ -15,10 +14,6 @@ namespace NadekoBot.Core.Services
         private readonly DbContextOptions<NadekoContext> migrateOptions;
 
         private static readonly ILoggerFactory _loggerFactory = LoggerFactory.Create(builder => { builder.AddFilter(DbLoggerCategory.Database.Command.Name, LogLevel.Information); });
-        //    (category, level)
-        //    => category == DbLoggerCategory.Database.Command.Name
-        //       && level >= LogLevel.Information, true)
-        //});
 
         public DbService(IBotCredentials creds)
         {
