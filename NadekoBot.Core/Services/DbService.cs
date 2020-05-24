@@ -5,6 +5,7 @@ using NadekoBot.Core.Services.Database;
 using System;
 using System.IO;
 using System.Linq;
+using Npgsql;
 
 namespace NadekoBot.Core.Services
 {
@@ -16,18 +17,29 @@ namespace NadekoBot.Core.Services
         private static readonly ILoggerFactory _loggerFactory = LoggerFactory.Create(builder => { builder.AddFilter(DbLoggerCategory.Database.Command.Name, LogLevel.Information); });
 
         public DbService(IBotCredentials creds)
-        {
-            var builder = new SqliteConnectionStringBuilder(creds.Db.ConnectionString);
-            builder.DataSource = Path.Combine(AppContext.BaseDirectory, builder.DataSource);
-
+        {            
             var optionsBuilder = new DbContextOptionsBuilder<NadekoContext>()
                 //.UseLoggerFactory(_loggerFactory)
                 ;
-            optionsBuilder.UseSqlite(builder.ToString());
-            options = optionsBuilder.Options;
 
-            optionsBuilder = new DbContextOptionsBuilder<NadekoContext>();
-            optionsBuilder.UseSqlite(builder.ToString());
+            if(creds.Db.Type == "postgre")
+            {
+                optionsBuilder.UseNpgsql(creds.Db.ConnectionString);
+                NadekoContext.DbType = "postgre";
+                options = optionsBuilder.Options;
+            }
+            else // sqlite
+            {
+                var builder = new SqliteConnectionStringBuilder(creds.Db.ConnectionString);
+                builder.DataSource = Path.Combine(AppContext.BaseDirectory, builder.DataSource);
+
+                optionsBuilder.UseSqlite(builder.ToString());
+                options = optionsBuilder.Options;
+
+                optionsBuilder = new DbContextOptionsBuilder<NadekoContext>();
+                optionsBuilder.UseSqlite(builder.ToString());
+            }
+            
             migrateOptions = optionsBuilder.Options;
         }
 
@@ -42,7 +54,8 @@ namespace NadekoBot.Core.Services
                     mContext.SaveChanges();
                     mContext.Dispose();
                 }
-                context.Database.ExecuteSqlRaw("PRAGMA journal_mode=WAL");
+                if(NadekoContext.IsSqlite)
+                    context.Database.ExecuteSqlRaw("PRAGMA journal_mode=WAL");
                 context.EnsureSeedData();
                 context.SaveChanges();
             }
@@ -54,10 +67,13 @@ namespace NadekoBot.Core.Services
             context.Database.SetCommandTimeout(60);
             var conn = context.Database.GetDbConnection();
             conn.Open();
-            using (var com = conn.CreateCommand())
+            if (NadekoContext.IsSqlite)
             {
-                com.CommandText = "PRAGMA journal_mode=WAL; PRAGMA synchronous=OFF";
-                com.ExecuteNonQuery();
+                using (var com = conn.CreateCommand())
+                {
+                    com.CommandText = "PRAGMA journal_mode=WAL; PRAGMA synchronous=OFF";
+                    com.ExecuteNonQuery();
+                }
             }
             return context;
         }

@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using NadekoBot.Common;
 using NadekoBot.Common.ShardCom;
 using NadekoBot.Core.Services;
+using NadekoBot.Core.Services.Database;
 using NadekoBot.Core.Services.Database.Models;
 using NadekoBot.Core.Services.Impl;
 using NadekoBot.Extensions;
@@ -164,7 +165,7 @@ namespace NadekoBot
                 AllGuildConfigs = uow.GuildConfigs.GetAllGuildConfigs(startingGuildIdList).ToImmutableArray();
 
                 IBotConfigProvider botConfigProvider = new BotConfigProvider(_db, _botConfig, Cache);
-
+                
                 var s = new ServiceCollection()
                     .AddSingleton<IBotCredentials>(Credentials)
                     .AddSingleton(_db)
@@ -174,7 +175,7 @@ namespace NadekoBot
                     .AddSingleton(this)
                     .AddSingleton(uow)
                     .AddSingleton(Cache);
-
+                s.AddDbContext<NadekoContext>();
                 s.AddHttpClient();
                 s.AddHttpClient("memelist").ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
                 {
