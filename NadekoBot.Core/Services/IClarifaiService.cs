@@ -7,6 +7,6 @@ namespace NadekoBot.Core.Services
 {
     public interface IClarifaiService : INService
     {
-        ClarifaiClient ClarifaiClient { get; };
+        ClarifaiClient ClarifaiClient { get; }
     }
 }

@@ -19,7 +19,7 @@
     <PackageReference Include="CoreCLR-NCalc" Version="2.2.74" />
     <PackageReference Include="Google.Apis.Urlshortener.v1" Version="1.41.1.138" />
     <PackageReference Include="Google.Apis.YouTube.v3" Version="1.45.0.1929" />
-    <PackageReference Include="Google.Apis.Customsearch.v1" Version="1.45.0.1965" />
+    <PackageReference Include="Google.Apis.Customsearch.v1" Version="1.45.0.1967" />
     <PackageReference Include="Html2Markdown" Version="3.3.1.407" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.4">
       <PrivateAssets>all</PrivateAssets>
@@ -46,6 +46,7 @@
   <ItemGroup>
     <Folder Include="Modules\Gambling\Common\CurrencyEvents\" />
     <Folder Include="Modules\Bet\" />
+    <Folder Include="Modules\NsfwCensor\" />
   </ItemGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'GlobalNadeko' ">
