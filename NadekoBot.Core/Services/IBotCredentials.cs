@@ -24,6 +24,7 @@ namespace NadekoBot.Core.Services
         string ShardRunArguments { get; }
         string PatreonCampaignId { get; }
         string CleverbotApiKey { get; }
+        string ClarifaiKey { get; }
         RestartConfig RestartCommand { get; }
         string MiningProxyUrl { get; }
         string MiningProxyCreds { get; }

@@ -1,9 +1,11 @@
-﻿using NadekoBot.Core.Services;
+﻿using Discord.Commands;
+using NadekoBot.Core.Services;
 using NLog;
 
 namespace NadekoBot.Modules.NsfwCensor
 {
-    public class NsfwCensor : NadekoTopLevelModule<IClarifaiService>
+    [Group]
+    public class NsfwCensor : NadekoTopLevelModule<ClarifaiService>
     {
         private static Logger _log = LogManager.GetCurrentClassLogger();
 

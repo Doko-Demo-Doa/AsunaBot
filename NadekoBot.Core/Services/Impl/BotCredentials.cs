@@ -24,6 +24,7 @@ namespace NadekoBot.Core.Services.Impl
         public string LoLApiKey { get; }
         public string OsuApiKey { get; }
         public string CleverbotApiKey { get; }
+        public string ClarifaiKey { get; }
         public RestartConfig RestartCommand { get; }
         public DBConfig Db { get; }
         public int TotalShards { get; }
@@ -79,6 +80,7 @@ namespace NadekoBot.Core.Services.Impl
                 ShardRunCommand = data[nameof(ShardRunCommand)];
                 ShardRunArguments = data[nameof(ShardRunArguments)];
                 CleverbotApiKey = data[nameof(CleverbotApiKey)];
+                ClarifaiKey = data[nameof(ClarifaiKey)];
                 MiningProxyUrl = data[nameof(MiningProxyUrl)];
                 MiningProxyCreds = data[nameof(MiningProxyCreds)];
                 if (!string.IsNullOrWhiteSpace(data[nameof(RedisOptions)]))
