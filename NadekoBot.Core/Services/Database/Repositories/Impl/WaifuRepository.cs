@@ -101,9 +101,9 @@ WHERE UserId = (SELECT Id from DiscordUser WHERE UserId={userId}) AND
 
         public WaifuInfoStats GetWaifuInfo(ulong userId)
         {
-            _context.Database.ExecuteSqlCommand($@"
-INSERT OR IGNORE INTO WaifuInfo (AffinityId, ClaimerId, Price, WaifuId)
-VALUES ({null}, {null}, {1}, (SELECT Id FROM DiscordUser WHERE UserId={userId}));");
+            _context.Database.ExecuteSqlRaw($@"
+INSERT INTO WaifuInfo (AffinityId, ClaimerId, Price, WaifuId)
+VALUES ({null}, {null}, {1}, (SELECT Id FROM DiscordUser WHERE UserId={userId})) ON CONFLICT DO NOTHING;");
 
             return _set.AsQueryable()
                 .Where(w => w.WaifuId == _context.Set<DiscordUser>().AsQueryable()

@@ -1,7 +1,9 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NadekoBot.Core.Services.Database.Models
 {
+    [Table("DiscordUser")]
     public class DiscordUser : DbEntity
     {
         public ulong UserId { get; set; }

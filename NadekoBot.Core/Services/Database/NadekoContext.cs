@@ -11,26 +11,35 @@ using System.Linq;
 
 namespace NadekoBot.Core.Services.Database
 {
-    public class NadekoContextFactory : IDesignTimeDbContextFactory<NadekoContext>
-    {
-        public NadekoContext CreateDbContext(string[] args)
-        {
-            var optionsBuilder = new DbContextOptionsBuilder<NadekoContext>();
-            IBotCredentials creds = new BotCredentials();
-            var builder = new SqliteConnectionStringBuilder(creds.Db.ConnectionString);
-            builder.DataSource = Path.Combine(AppContext.BaseDirectory, builder.DataSource);
-            optionsBuilder.UseSqlite(builder.ToString());
-            var ctx = new NadekoContext(optionsBuilder.Options);
-            ctx.Database.SetCommandTimeout(60);
-            return ctx;
-        }
-    }
+    //public class NadekoContextFactory : IDesignTimeDbContextFactory<NadekoContext>
+    //{
+    //    public NadekoContext CreateDbContext(string[] args)
+    //    {
+    //        var optionsBuilder = new DbContextOptionsBuilder<NadekoContext>();
+    //        IBotCredentials creds = new BotCredentials();
+
+    //        //if (creds.Db.Type == "postgre")
+    //        {
+    //            optionsBuilder.UseNpgsql(creds.Db.ConnectionString);
+    //        }
+    //        //else
+    //        //{
+    //        //    var builder = new SqliteConnectionStringBuilder(creds.Db.ConnectionString);
+    //        //    builder.DataSource = Path.Combine(AppContext.BaseDirectory, builder.DataSource);
+    //        //    optionsBuilder.UseSqlite(builder.ToString());
+    //        //}
+
+    //        var ctx = new NadekoContext(optionsBuilder.Options);
+    //        ctx.Database.SetCommandTimeout(60);
+    //        return ctx;
+    //    }
+    //}
 
     public class NadekoContext : DbContext
     {
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-            
+            options.UseNpgsql("Server=localhost;Database=Asuna;User Id=postgres;Password=sa");
         }
 
         public static string DbType = "sqlite";
@@ -70,8 +79,14 @@ namespace NadekoBot.Core.Services.Database
         public DbSet<Stake> Stakes { get; set; }
         public DbSet<PlantedCurrency> PlantedCurrency { get; set; }
 
+        public NadekoContext() : base()
+        {
+
+        }
+
         public NadekoContext(DbContextOptions<NadekoContext> options) : base(options)
         {
+            //UseNpgsql("Server=localhost;Database=Asuna;User Id=postgres;Password=sa");
         }
 
         public void EnsureSeedData()
