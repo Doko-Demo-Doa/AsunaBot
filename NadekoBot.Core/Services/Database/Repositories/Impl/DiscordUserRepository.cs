@@ -15,11 +15,11 @@ namespace NadekoBot.Core.Services.Database.Repositories.Impl
 
         public void EnsureCreated(ulong userId, string username, string discrim, string avatarId)
         {
-            var str = $@"INSERT INTO ""DiscordUser"" (""UserId"", ""Username"", ""Discriminator"", ""AvatarId"")
-                VALUES ({userId}, '{username}', '{discrim}', '{avatarId}') ON CONFLICT DO UPDATE SET ""Username""='{username}',
+            var str = $@"INSERT INTO ""DiscordUsers"" (""UserId"", ""Username"", ""Discriminator"", ""AvatarId"")
+                VALUES ({userId}, '{username}', '{discrim}', '{avatarId}') ON CONFLICT (""UserId"") DO UPDATE SET ""Username""='{username}',
                     ""Discriminator""='{discrim}',
                     ""AvatarId""='{avatarId}'
-                    WHERE ""UserId""={userId}";
+                    WHERE ""DiscordUsers"".""UserId""={userId}";
             _context.Database.ExecuteSqlRaw(str);
         }
 
@@ -91,9 +91,9 @@ namespace NadekoBot.Core.Services.Database.Repositories.Impl
             if (amount < 0 && !allowNegative)
             {
                 var rows = _context.Database.ExecuteSqlRaw($@"
-UPDATE DiscordUser
-SET CurrencyAmount=CurrencyAmount+{amount}
-WHERE UserId={userId} AND CurrencyAmount>={-amount};");
+UPDATE ""DiscordUsers""
+SET ""CurrencyAmount""=""CurrencyAmount""+{amount}
+WHERE ""UserId""={userId} AND ""CurrencyAmount"">={-amount};");
                 return rows > 0;
             }
 
@@ -101,9 +101,9 @@ WHERE UserId={userId} AND CurrencyAmount>={-amount};");
             if (amount < 0 && allowNegative)
             {
                 var rows = _context.Database.ExecuteSqlRaw($@"
-UPDATE DiscordUser
-SET CurrencyAmount=CurrencyAmount+{amount}
-WHERE UserId={userId};");
+UPDATE ""DiscordUsers""
+SET ""CurrencyAmount""=""CurrencyAmount""+{amount}
+WHERE ""UserId""={userId};");
                 return rows > 0;
             }
 
@@ -118,19 +118,19 @@ WHERE UserId={userId};");
             // just update the amount, there is no new user data
             if (!updatedUserData)
             {
-                _context.Database.ExecuteSqlRaw($@"INSERT INTO DiscordUser (UserId, Username, Discriminator, AvatarId, CurrencyAmount)
-VALUES ({userId}, {name}, {discrim}, {avatarId}, {amount}) ON CONFLICT DO UPDATE SET CurrencyAmount=CurrencyAmount+{amount}
-WHERE UserId={userId};
+                _context.Database.ExecuteSqlRaw($@"INSERT INTO ""DiscordUsers"" (""UserId"", ""Username"", ""Discriminator"", ""AvatarId"", ""CurrencyAmount"")
+VALUES ({userId}, {name}, {discrim}, {avatarId}, {amount}) ON CONFLICT(""UserId"") DO UPDATE SET ""CurrencyAmount""=""CurrencyAmount""+{amount}
+WHERE ""UserId""={userId};
 ");
             }
             else
             {
-                _context.Database.ExecuteSqlRaw($@"INSERT INTO DiscordUser (UserId, Username, Discriminator, AvatarId, CurrencyAmount)
-VALUES ({userId}, {name}, {discrim}, {avatarId}, {amount}) ON CONFLICT DO UPDATE SET CurrencyAmount=CurrencyAmount+{amount},
-    Username={name},
-    Discriminator={discrim},
-    AvatarId={avatarId}
-WHERE UserId={userId};
+                _context.Database.ExecuteSqlRaw($@"INSERT INTO ""DiscordUsers"" (""UserId"", ""Username"", ""Discriminator"", ""AvatarId"", ""CurrencyAmount"")
+VALUES ({userId}, {name}, {discrim}, {avatarId}, {amount}) ON CONFLICT (""UserId"") DO UPDATE SET ""CurrencyAmount""=""CurrencyAmount""+{amount},
+    ""Username""={name},
+    ""Discriminator""={discrim},
+    ""AvatarId""={avatarId}
+WHERE ""UserId""={userId};
 ");
             }
             return true;
@@ -139,9 +139,9 @@ WHERE UserId={userId};
         public void CurrencyDecay(float decay, ulong botId)
         {
             _context.Database.ExecuteSqlRaw($@"
-UPDATE DiscordUser
-SET CurrencyAmount=CurrencyAmount-ROUND(CurrencyAmount*{decay}-0.5)
-WHERE CurrencyAmount>0 AND UserId!={botId};");
+UPDATE ""DiscordUsers""
+SET ""CurrencyAmount""=""CurrencyAmount""-ROUND(""CurrencyAmount""*{decay}-0.5)
+WHERE ""CurrencyAmount"">0 AND ""UserId""!={botId};");
         }
 
         public long GetCurrencyDecayAmount(float decay)

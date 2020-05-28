@@ -92,18 +92,18 @@ namespace NadekoBot.Core.Services.Database.Repositories.Impl
 
             return _context.Set<WaifuUpdate>()
                 .FromSqlRaw($@"SELECT 1 
-FROM WaifuUpdates
-WHERE UserId = (SELECT Id from DiscordUser WHERE UserId={userId}) AND 
-    UpdateType = 0 AND 
-    NewId IS NOT NULL")
+FROM ""WaifuUpdates""
+WHERE ""UserId"" = (SELECT Id from ""DiscordUser"" WHERE ""UserId""={userId}) AND 
+    ""UpdateType"" = 0 AND 
+    ""NewId IS"" NOT NULL")
                 .Count();
         }
 
         public WaifuInfoStats GetWaifuInfo(ulong userId)
         {
             _context.Database.ExecuteSqlRaw($@"
-INSERT INTO WaifuInfo (AffinityId, ClaimerId, Price, WaifuId)
-VALUES ({null}, {null}, {1}, (SELECT Id FROM DiscordUser WHERE UserId={userId})) ON CONFLICT DO NOTHING;");
+INSERT INTO ""WaifuInfo"" (""AffinityId"", ""ClaimerId"", ""Price"", ""WaifuId"")
+VALUES ({null}, {null}, {1}, (SELECT Id FROM ""DiscordUser"" WHERE ""UserId""={userId})) ON CONFLICT DO NOTHING;");
 
             return _set.AsQueryable()
                 .Where(w => w.WaifuId == _context.Set<DiscordUser>().AsQueryable()
