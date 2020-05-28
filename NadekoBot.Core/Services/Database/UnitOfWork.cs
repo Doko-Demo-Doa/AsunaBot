@@ -54,6 +54,9 @@ namespace NadekoBot.Core.Services.Database
         private IPlantedCurrencyRepository _planted;
         public IPlantedCurrencyRepository PlantedCurrency => _planted ?? (_planted = new PlantedCurrencyRepository(_context));
 
+        private ILeaderboardRepository _leaderboard;
+        public ILeaderboardRepository Leaderboards => _leaderboard ?? (_leaderboard = new LeaderboardRepository(_context));
+
         public UnitOfWork(NadekoContext context)
         {
             _context = context;

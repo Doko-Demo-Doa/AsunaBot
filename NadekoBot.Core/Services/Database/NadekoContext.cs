@@ -39,7 +39,7 @@ namespace NadekoBot.Core.Services.Database
     {
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-            options.UseNpgsql("Server=localhost;Database=Asuna;User Id=postgres;Password=sa");
+            //options.UseNpgsql("Server=localhost;Database=Asuna;User Id=postgres;Password=sa"); // uncomment this line and enter local database info if you want to use EF migrations
         }
 
         public static string DbType = "sqlite";
@@ -79,14 +79,16 @@ namespace NadekoBot.Core.Services.Database
         public DbSet<Stake> Stakes { get; set; }
         public DbSet<PlantedCurrency> PlantedCurrency { get; set; }
 
+        // extends
+        public DbSet<Leaderboard> Leaderboards { get; set; }
+
         public NadekoContext() : base()
         {
 
         }
 
         public NadekoContext(DbContextOptions<NadekoContext> options) : base(options)
-        {
-            //UseNpgsql("Server=localhost;Database=Asuna;User Id=postgres;Password=sa");
+        {            
         }
 
         public void EnsureSeedData()
@@ -374,6 +376,11 @@ namespace NadekoBot.Core.Services.Database
                 .HasOne(x => x.GuildConfig)
                 .WithMany(x => x.SelfAssignableRoleGroupNames)
                 .IsRequired();
+            #endregion
+
+            #region
+            modelBuilder.Entity<Leaderboard>()
+                .HasKey(k => new { k.UserId, k.Type, k.TimeType, k.Date });
             #endregion
         }
     }

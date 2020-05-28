@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace NadekoBot.Core.Migrations
 {
     [DbContext(typeof(NadekoContext))]
-    [Migration("20200527103854_initial")]
+    [Migration("20200528101040_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -984,6 +984,28 @@ namespace NadekoBot.Core.Migrations
                     b.HasIndex("LogSettingId");
 
                     b.ToTable("IgnoredVoicePresenceCHannels");
+                });
+
+            modelBuilder.Entity("NadekoBot.Core.Services.Database.Models.Leaderboard", b =>
+                {
+                    b.Property<decimal>("UserId")
+                        .HasColumnType("numeric(20,0)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TimeType")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long>("Score")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("UserId", "Type", "TimeType", "Date");
+
+                    b.ToTable("Leaderboards");
                 });
 
             modelBuilder.Entity("NadekoBot.Core.Services.Database.Models.LogSetting", b =>

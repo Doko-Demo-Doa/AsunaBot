@@ -984,6 +984,28 @@ namespace NadekoBot.Core.Migrations
                     b.ToTable("IgnoredVoicePresenceCHannels");
                 });
 
+            modelBuilder.Entity("NadekoBot.Core.Services.Database.Models.Leaderboard", b =>
+                {
+                    b.Property<decimal>("UserId")
+                        .HasColumnType("numeric(20,0)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TimeType")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long>("Score")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("UserId", "Type", "TimeType", "Date");
+
+                    b.ToTable("Leaderboards");
+                });
+
             modelBuilder.Entity("NadekoBot.Core.Services.Database.Models.LogSetting", b =>
                 {
                     b.Property<int>("Id")

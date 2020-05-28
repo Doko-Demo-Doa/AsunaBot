@@ -105,6 +105,21 @@ namespace NadekoBot.Core.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Leaderboards",
+                columns: table => new
+                {
+                    UserId = table.Column<decimal>(nullable: false),
+                    Type = table.Column<int>(nullable: false),
+                    TimeType = table.Column<int>(nullable: false),
+                    Date = table.Column<DateTime>(nullable: false),
+                    Score = table.Column<long>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Leaderboards", x => new { x.UserId, x.Type, x.TimeType, x.Date });
+                });
+
+            migrationBuilder.CreateTable(
                 name: "LogSettings",
                 columns: table => new
                 {
@@ -2145,6 +2160,9 @@ namespace NadekoBot.Core.Migrations
 
             migrationBuilder.DropTable(
                 name: "IgnoredVoicePresenceCHannels");
+
+            migrationBuilder.DropTable(
+                name: "Leaderboards");
 
             migrationBuilder.DropTable(
                 name: "MusicSettings");

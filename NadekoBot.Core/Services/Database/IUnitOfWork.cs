@@ -23,6 +23,7 @@ namespace NadekoBot.Core.Services.Database
         IClubRepository Clubs { get; }
         IPollsRepository Polls { get; }
         IPlantedCurrencyRepository PlantedCurrency { get; }
+        ILeaderboardRepository Leaderboards { get;  }
 
         int SaveChanges();
         Task<int> SaveChangesAsync();

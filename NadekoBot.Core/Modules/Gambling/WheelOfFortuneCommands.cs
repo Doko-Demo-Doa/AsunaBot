@@ -8,6 +8,8 @@ using NadekoBot.Modules.Gambling.Services;
 using NadekoBot.Core.Modules.Gambling.Common;
 using NadekoBot.Core.Common;
 using System.Collections.Immutable;
+using NadekoBot.Core.Services.Database.Repositories;
+using NadekoBot.Core.Services.Database.Models;
 
 namespace NadekoBot.Modules.Gambling
 {
@@ -27,11 +29,13 @@ namespace NadekoBot.Modules.Gambling
 
             private readonly ICurrencyService _cs;
             private readonly DbService _db;
+            private readonly ILeaderboardService _lb;
 
-            public WheelOfFortuneCommands(ICurrencyService cs, DbService db)
+            public WheelOfFortuneCommands(ICurrencyService cs, ILeaderboardService lb, DbService db)
             {
                 _cs = cs;
                 _db = db;
+                _lb = lb;
             }
 
             [NadekoCommand, Usage, Description, Aliases]
@@ -46,6 +50,7 @@ namespace NadekoBot.Modules.Gambling
                     return;
                 }
 
+                await _lb.AddAsync(ctx.User.Id, LeaderboardType.WheelSpent, LeaderboardTimeType.AllTime, amount);
                 var result = await _service.WheelOfFortuneSpinAsync(ctx.User.Id, amount).ConfigureAwait(false);
 
                 await ctx.Channel.SendConfirmAsync(
