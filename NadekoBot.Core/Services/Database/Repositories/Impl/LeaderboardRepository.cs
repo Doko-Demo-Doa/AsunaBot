@@ -17,7 +17,7 @@ namespace NadekoBot.Core.Services.Database.Repositories.Impl
             _set = context.Set<Leaderboard>();
         }
 
-        public async Task<bool> AddAsync(ulong userId, LeaderboardType type, LeaderboardTimeType timeType, int scoreInc)
+        public async Task<bool> AddAsync(ulong userId, LeaderboardType type, LeaderboardTimeType timeType, long scoreInc)
         {
             DateTime date = DateTime.Now.Date;
             switch (timeType)

@@ -8,6 +8,6 @@ namespace NadekoBot.Core.Services
 {
     public interface ILeaderboardService : INService
     {
-        Task<bool> AddAsync(ulong userId, LeaderboardType type, LeaderboardTimeType timeType, int scoreIncrease)
+        Task<bool> AddAsync(ulong userId, LeaderboardType type, LeaderboardTimeType timeType, long scoreIncrease);
     }
 }

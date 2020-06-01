@@ -21,6 +21,7 @@ namespace NadekoBot.Modules.Gambling.Services
         private readonly Logger _log;
         private readonly DiscordSocketClient _client;
         private readonly IDataCache _cache;
+        private readonly ILeaderboardService _lb;
 
         public ConcurrentDictionary<(ulong, ulong), RollDuelGame> Duels { get; } = new ConcurrentDictionary<(ulong, ulong), RollDuelGame>();
         public ConcurrentDictionary<ulong, Connect4Game> Connect4Games { get; } = new ConcurrentDictionary<ulong, Connect4Game>();
@@ -28,7 +29,7 @@ namespace NadekoBot.Modules.Gambling.Services
         private readonly Timer _decayTimer;
 
         public GamblingService(DbService db, NadekoBot bot, ICurrencyService cs, IBotConfigProvider bc,
-            DiscordSocketClient client, IDataCache cache)
+            DiscordSocketClient client, IDataCache cache, ILeaderboardService lb)
         {
             _db = db;
             _cs = cs;
@@ -37,6 +38,7 @@ namespace NadekoBot.Modules.Gambling.Services
             _log = LogManager.GetCurrentClassLogger();
             _client = client;
             _cache = cache;
+            _lb = lb;
 
             if (_bot.Client.ShardId == 0)
             {
@@ -140,7 +142,7 @@ namespace NadekoBot.Modules.Gambling.Services
 
         public Task<WheelOfFortuneGame.Result> WheelOfFortuneSpinAsync(ulong userId, long bet)
         {
-            return new WheelOfFortuneGame(userId, bet, _cs).SpinAsync();
+            return new WheelOfFortuneGame(userId, bet, _cs, _lb).SpinAsync();
         }
     }
 }

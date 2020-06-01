@@ -55,6 +55,7 @@ namespace NadekoBot.Core.Services
                     if (!NadekoContext.IsSqlite)
                     {
                         mContext.Database.ExecuteSqlRaw(@"ALTER TABLE ""DiscordUsers"" ALTER COLUMN ""IsClubAdmin"" SET DEFAULT false;
+                        ALTER TABLE ""DiscordUsers"" ALTER COLUMN ""DateAdded"" SET DEFAULT now();
                         ALTER TABLE ""DiscordUsers"" ALTER COLUMN ""TotalXp"" SET DEFAULT 0;
                         ALTER TABLE ""DiscordUsers"" ALTER COLUMN ""LastLevelUp"" SET DEFAULT now();
                         ALTER TABLE ""DiscordUsers"" ALTER COLUMN ""LastXpGain"" SET DEFAULT now();

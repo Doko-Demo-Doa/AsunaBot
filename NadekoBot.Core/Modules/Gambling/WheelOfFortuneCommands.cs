@@ -50,7 +50,7 @@ namespace NadekoBot.Modules.Gambling
                     return;
                 }
 
-                await _lb.AddAsync(ctx.User.Id, LeaderboardType.WheelSpent, LeaderboardTimeType.AllTime, amount);
+                await _lb.AddAsync(ctx.User.Id, LeaderboardType.WheelSpent, LeaderboardTimeType.AllTime, amount.Value);
                 var result = await _service.WheelOfFortuneSpinAsync(ctx.User.Id, amount).ConfigureAwait(false);
 
                 await ctx.Channel.SendConfirmAsync(

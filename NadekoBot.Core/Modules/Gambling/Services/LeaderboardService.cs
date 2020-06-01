@@ -31,7 +31,7 @@ namespace NadekoBot.Modules.Gambling.Services
             _cache = cache;
         }
 
-        public async Task<bool> AddAsync(ulong userId, LeaderboardType type, LeaderboardTimeType timeType, int scoreIncrease)
+        public async Task<bool> AddAsync(ulong userId, LeaderboardType type, LeaderboardTimeType timeType, long scoreIncrease)
         {
             using (var ctx = _db.GetDbContext())
             {

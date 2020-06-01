@@ -119,18 +119,18 @@ WHERE ""UserId""={userId};");
             if (!updatedUserData)
             {
                 _context.Database.ExecuteSqlRaw($@"INSERT INTO ""DiscordUsers"" (""UserId"", ""Username"", ""Discriminator"", ""AvatarId"", ""CurrencyAmount"")
-VALUES ({userId}, {name}, {discrim}, {avatarId}, {amount}) ON CONFLICT(""UserId"") DO UPDATE SET ""CurrencyAmount""=""CurrencyAmount""+{amount}
-WHERE ""UserId""={userId};
+VALUES ({userId}, '{name}', '{discrim}', '{avatarId}', {amount}) ON CONFLICT(""UserId"") DO UPDATE SET ""CurrencyAmount""=""DiscordUsers"".""CurrencyAmount""+{amount}
+WHERE ""DiscordUsers"".""UserId""={userId};
 ");
             }
             else
             {
                 _context.Database.ExecuteSqlRaw($@"INSERT INTO ""DiscordUsers"" (""UserId"", ""Username"", ""Discriminator"", ""AvatarId"", ""CurrencyAmount"")
-VALUES ({userId}, {name}, {discrim}, {avatarId}, {amount}) ON CONFLICT (""UserId"") DO UPDATE SET ""CurrencyAmount""=""CurrencyAmount""+{amount},
-    ""Username""={name},
-    ""Discriminator""={discrim},
-    ""AvatarId""={avatarId}
-WHERE ""UserId""={userId};
+VALUES ({userId}, '{name}', '{discrim}', '{avatarId}', {amount}) ON CONFLICT (""UserId"") DO UPDATE SET ""CurrencyAmount""=""DiscordUsers"".""CurrencyAmount""+{amount},
+    ""Username""='{name}',
+    ""Discriminator""='{discrim}',
+    ""AvatarId""='{avatarId}'
+WHERE ""DiscordUsers"".""UserId""={userId};
 ");
             }
             return true;
