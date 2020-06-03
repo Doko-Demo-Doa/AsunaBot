@@ -214,6 +214,9 @@ namespace NadekoBot.Core.Services.Impl
                             return false;
                         bc.CurrencyGenerationPassword = pw;
                         break;
+                    case BotConfigEditType.RoleForSale:
+                        bc.RoleForSale = newValue;
+                        break;
                     default:
                         return false;
                 }

@@ -174,5 +174,6 @@
         /// Default is 1.
         /// </summary>
         PatreonCurrencyPerCent,
+        RoleForSale,
     }
 }

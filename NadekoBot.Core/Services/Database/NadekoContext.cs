@@ -81,6 +81,8 @@ namespace NadekoBot.Core.Services.Database
 
         // extends
         public DbSet<Leaderboard> Leaderboards { get; set; }
+        public DbSet<VLeaderboard> VLeaderboards { get; set; }
+        public DbSet<RoleInventory> RoleInventories { get; set; }
 
         public NadekoContext() : base()
         {
@@ -378,9 +380,16 @@ namespace NadekoBot.Core.Services.Database
                 .IsRequired();
             #endregion
 
-            #region
+            #region Leaderboard
             modelBuilder.Entity<Leaderboard>()
                 .HasKey(k => new { k.UserId, k.Type, k.TimeType, k.Date });
+            modelBuilder.Entity<VLeaderboard>().ToView("VLeaderboards")
+                .HasNoKey();
+            #endregion
+
+            #region
+            modelBuilder.Entity<RoleInventory>()
+                .HasKey(k => new { k.UserId, k.RoleId });
             #endregion
         }
     }

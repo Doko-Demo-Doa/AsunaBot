@@ -14,6 +14,16 @@ namespace NadekoBot.Core.Services.Database.Models
         public long Score { get; set; }
     }
 
+    public class VLeaderboard
+    {
+        public ulong UserId { get; set; }
+        public LeaderboardType Type { get; set; }
+        public LeaderboardTimeType TimeType { get; set; }
+        public DateTime Date { get; set; }
+        public long Score { get; set; }
+        public string Username { get; set; }
+    }
+
     public enum LeaderboardType
     {
         Gambling = 1,

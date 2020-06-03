@@ -50,6 +50,8 @@ namespace NadekoBot.Modules.Gambling.Common.WheelOfFortune
             {
                 await _cs.AddAsync(_userId, "Wheel Of Fortune - won", amount, gamble: true).ConfigureAwait(false);
                 await _lb.AddAsync(_userId, LeaderboardType.Wheel, LeaderboardTimeType.AllTime, amount);
+                await _lb.AddAsync(_userId, LeaderboardType.Gambling, LeaderboardTimeType.AllTime, amount);
+                await _lb.AddAsync(_userId, LeaderboardType.Gambling, LeaderboardTimeType.Monthly, amount);
             }
                 
 

@@ -38,5 +38,13 @@ namespace NadekoBot.Modules.Gambling.Services
                 return await ctx.Leaderboards.AddAsync(userId, type, timeType, scoreIncrease);
             }
         }
+
+        public async Task<List<VLeaderboard>> GetTop(LeaderboardType type, LeaderboardTimeType timeType, DateTime date, int page, int records)
+        {
+            using (var ctx = _db.GetDbContext())
+            {
+                return await ctx.Leaderboards.GetTop(type, timeType, date, page, records);
+            }
+        }
     }
 }

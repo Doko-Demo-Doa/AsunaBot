@@ -11,7 +11,11 @@ using NadekoBot.Common.Attributes;
 using NadekoBot.Common.Collections;
 using NadekoBot.Core.Services;
 using NadekoBot.Core.Services.Database.Models;
+using NadekoBot.Core.Services.Database.Repositories;
+using NadekoBot.Core.Services.Database.Repositories.Impl;
+using NadekoBot.Core.Services.Impl;
 using NadekoBot.Extensions;
+using Newtonsoft.Json;
 
 namespace NadekoBot.Modules.Gambling
 {
@@ -23,6 +27,9 @@ namespace NadekoBot.Modules.Gambling
             private readonly DbService _db;
             private readonly ICurrencyService _cs;
             private readonly DiscordSocketClient _client;
+            private readonly IBotConfigProvider _bc;
+            private readonly ILeaderboardRepository _lb;
+            private readonly IRoleInventoryRepository _ri;
 
             public enum Role
             {
@@ -34,11 +41,14 @@ namespace NadekoBot.Modules.Gambling
                 List
             }
 
-            public FlowerShopCommands(DbService db, ICurrencyService cs, DiscordSocketClient client)
+            public FlowerShopCommands(DbService db, ICurrencyService cs, DiscordSocketClient client, IBotConfigProvider bc, ILeaderboardRepository lb, IRoleInventoryRepository ri)
             {
                 _db = db;
                 _cs = cs;
                 _client = client;
+                _bc = bc;
+                _lb = lb;
+                _ri = ri;
             }
 
             [NadekoCommand, Usage, Description, Aliases]
@@ -72,6 +82,23 @@ namespace NadekoBot.Modules.Gambling
                     }
                     return embed;
                 }, entries.Count, 9, true).ConfigureAwait(false);
+            }
+
+            [NadekoCommand, Usage, Description, Aliases]
+            [RequireContext(ContextType.Guild)]
+            public async Task RoleInventory()
+            {
+                var roleInv = await _ri.GetAsync(ctx.User.Id);
+                List<string> list = new List<string>();
+                foreach (var roleId in roleInv)
+                {
+                    var role = ctx.Guild.GetRole(roleId);
+                    if (role != null)
+                    {
+                        list.Add(role.Name);
+                    }
+                }
+                await ctx.Channel.SendMessageAsync($"You have role(s): {string.Join(',', list)}");
             }
 
             [NadekoCommand, Usage, Description, Aliases]
@@ -113,7 +140,7 @@ namespace NadekoBot.Modules.Gambling
                     {
                         try
                         {
-                            await guser.AddRoleAsync(role).ConfigureAwait(false);
+                            await guser.AddRoleAsync(role).ConfigureAwait(false);                            
                         }
                         catch (Exception ex)
                         {
@@ -122,9 +149,11 @@ namespace NadekoBot.Modules.Gambling
                             await ReplyErrorLocalizedAsync("shop_role_purchase_error").ConfigureAwait(false);
                             return;
                         }
+                        await _ri.AddAsync(ctx.User.Id, role.Id);
                         var profit = GetProfitAmount(entry.Price);
                         await _cs.AddAsync(entry.AuthorId, $"Shop sell item - {entry.Type}", profit).ConfigureAwait(false);
                         await _cs.AddAsync(ctx.Client.CurrentUser.Id, $"Shop sell item - cut", entry.Price - profit).ConfigureAwait(false);
+                        await _lb.AddAsync(ctx.User.Id, LeaderboardType.GamblingSpent, LeaderboardTimeType.AllTime, entry.Price);                        
                         await ReplyConfirmLocalizedAsync("shop_role_purchase", Format.Bold(role.Name)).ConfigureAwait(false);
                         return;
                     }
@@ -224,8 +253,14 @@ namespace NadekoBot.Modules.Gambling
                     {
                         entry
                     };
-                    uow.GuildConfigs.ForId(ctx.Guild.Id, set => set).ShopEntries = entries;
+                    uow.GuildConfigs.ForId(ctx.Guild.Id, set => set).ShopEntries = entries;                    
                     uow.SaveChanges();
+                    List<ulong> roleForSales = JsonConvert.DeserializeObject<List<ulong>>(_bc.BotConfig.RoleForSale);
+                    if (!roleForSales.Contains(role.Id))
+                    {
+                        roleForSales.Add(role.Id);
+                        _bc.Edit(BotConfigEditType.RoleForSale, JsonConvert.SerializeObject(roleForSales));
+                    }
                 }
                 await ctx.Channel.EmbedAsync(EntryToEmbed(entry)
                     .WithTitle(GetText("shop_item_add"))).ConfigureAwait(false);
