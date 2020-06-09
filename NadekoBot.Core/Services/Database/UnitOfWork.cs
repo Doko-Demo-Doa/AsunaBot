@@ -57,6 +57,9 @@ namespace NadekoBot.Core.Services.Database
         private ILeaderboardRepository _leaderboard;
         public ILeaderboardRepository Leaderboards => _leaderboard ?? (_leaderboard = new LeaderboardRepository(_context));
 
+        private IRoleInventoryRepository _roleInventory;
+        public IRoleInventoryRepository RoleInventory => _roleInventory ?? (_roleInventory = new RoleInventoryRepository(_context));
+
         public UnitOfWork(NadekoContext context)
         {
             _context = context;

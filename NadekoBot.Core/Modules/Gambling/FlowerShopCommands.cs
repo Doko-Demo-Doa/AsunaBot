@@ -10,6 +10,7 @@ using NadekoBot.Common;
 using NadekoBot.Common.Attributes;
 using NadekoBot.Common.Collections;
 using NadekoBot.Core.Services;
+using NadekoBot.Core.Services.Database;
 using NadekoBot.Core.Services.Database.Models;
 using NadekoBot.Core.Services.Database.Repositories;
 using NadekoBot.Core.Services.Database.Repositories.Impl;
@@ -41,14 +42,14 @@ namespace NadekoBot.Modules.Gambling
                 List
             }
 
-            public FlowerShopCommands(DbService db, ICurrencyService cs, DiscordSocketClient client, IBotConfigProvider bc, ILeaderboardRepository lb, IRoleInventoryRepository ri)
+            public FlowerShopCommands(DbService db, ICurrencyService cs, DiscordSocketClient client, IBotConfigProvider bc)//, ILeaderboardRepository lb, IRoleInventoryRepository ri)
             {
                 _db = db;
                 _cs = cs;
                 _client = client;
                 _bc = bc;
-                _lb = lb;
-                _ri = ri;
+                _lb = db.GetDbContext().Leaderboards;
+                _ri = db.GetDbContext().RoleInventory;
             }
 
             [NadekoCommand, Usage, Description, Aliases]

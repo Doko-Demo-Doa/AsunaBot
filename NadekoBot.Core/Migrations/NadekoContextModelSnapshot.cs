@@ -285,6 +285,9 @@ namespace NadekoBot.Core.Migrations
                     b.Property<string>("RemindMessageFormat")
                         .HasColumnType("text");
 
+                    b.Property<string>("RoleForSale")
+                        .HasColumnType("text");
+
                     b.Property<bool>("RotatingStatuses")
                         .HasColumnType("boolean");
 
@@ -1694,6 +1697,22 @@ namespace NadekoBot.Core.Migrations
                         .IsUnique();
 
                     b.ToTable("RewardedUsers");
+                });
+
+            modelBuilder.Entity("NadekoBot.Core.Services.Database.Models.RoleInventory", b =>
+                {
+                    b.Property<decimal>("UserId")
+                        .HasColumnType("numeric(20,0)");
+
+                    b.Property<decimal>("RoleId")
+                        .HasColumnType("numeric(20,0)");
+
+                    b.Property<DateTime>("DateAdded")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.ToTable("RoleInventory");
                 });
 
             modelBuilder.Entity("NadekoBot.Core.Services.Database.Models.SelfAssignedRole", b =>
