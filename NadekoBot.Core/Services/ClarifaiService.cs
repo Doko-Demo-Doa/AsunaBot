@@ -16,7 +16,7 @@ namespace NadekoBot.Core.Services
 
         private readonly ClarifaiClient _clarifaiClient;
 
-        private static float SFW_THRESHOLD = 0.63f;
+        private static float SFW_THRESHOLD = 0.69f;
 
         public ClarifaiService(DiscordSocketClient _client, IBotCredentials creds)
         {
