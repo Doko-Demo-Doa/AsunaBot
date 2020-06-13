@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Collections.Generic;
+using System.Globalization;
 using System.Net;
 using System.Text.RegularExpressions;
 
@@ -9,6 +10,8 @@ namespace NadekoBot.Core.Common
         public URLUtils()
         {
         }
+
+        public static readonly List<string> ImageExtensions = new List<string> { ".JPG", ".JPE", ".BMP", ".GIF", ".PNG", "MP4", "OGG", "MKV", "WEBM" };
 
         public static string ExtractUrl(string InputStr)
         {
@@ -27,13 +30,21 @@ namespace NadekoBot.Core.Common
         {
             try
             {
+                foreach (var ext in ImageExtensions)
+                {
+                    if (URL.ToUpperInvariant().EndsWith(ext))
+                    {
+                        return true;
+                    }
+                }
+
                 var req = (HttpWebRequest)HttpWebRequest.Create(URL);
                 req.Method = "HEAD";
                 using var resp = req.GetResponse();
                 return resp.ContentType.ToLower(CultureInfo.InvariantCulture)
                            .StartsWith("image/");
             }
-            catch (WebException e)
+            catch (WebException)
             {
                 // Code...
                 return false;
