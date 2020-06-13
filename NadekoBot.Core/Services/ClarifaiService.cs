@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
+using AngleSharp.Common;
 using Clarifai.API;
 using Clarifai.DTOs.Inputs;
 using Clarifai.DTOs.Predictions;
@@ -114,7 +116,11 @@ namespace NadekoBot.Core.Services
 
         public void ProcessNsfwMessage(SocketMessage m)
         {
-            // TODO
+            if (m.Author.IsBot) return;
+            if ((m.Attachments.Count > 0) && m.Attachments.First().Filename.StartsWith("SPOILER_")) return;
+
+            var CurrentChannel = m.Channel;
+            string NewContent = m.Content.Replace("!nsfw", "").Replace("!ns", "");
         }
 
         public void PrintOut(SocketMessage msg)
