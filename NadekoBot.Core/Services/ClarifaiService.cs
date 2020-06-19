@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using AngleSharp.Common;
+using System.Threading.Tasks;
 using Clarifai.API;
 using Clarifai.DTOs.Inputs;
 using Clarifai.DTOs.Predictions;
@@ -49,7 +50,7 @@ namespace NadekoBot.Core.Services
             return dc.Name != null && dc.Name.Equals("nsfw") && dc.Value < SFW_THRESHOLD;
         }
 
-        public void HandlePotentialNsfwMessage(SocketMessage msg)
+        public async void HandlePotentialNsfwMessage(SocketMessage msg)
         {
 
             string ExtractedUrl = URLUtils.ExtractUrl(msg.Content);
@@ -61,7 +62,7 @@ namespace NadekoBot.Core.Services
 
             if (msg.Content.StartsWith("!nsfw") || msg.Content.StartsWith("!ns"))
             {
-                ProcessNsfwMessage(msg);
+                await ProcessNsfwMessage(msg);
             }
 
             if (URLUtils.IsImageUrl(ExtractedUrl))
@@ -94,7 +95,7 @@ namespace NadekoBot.Core.Services
             }
         }
 
-        public void ProcessAttachment(SocketMessage m)
+        public async void ProcessAttachment(SocketMessage m)
         {
             bool IsGeneralChannel = false;
             if (!IsGeneralChannel) return;
@@ -109,18 +110,34 @@ namespace NadekoBot.Core.Services
 
                 if (IsNsfwImage(attachment.Url))
                 {
-                    ProcessNsfwMessage(m);
+                    await ProcessNsfwMessage(m);
                 }
             }
         }
 
-        public void ProcessNsfwMessage(SocketMessage m)
+        public async Task ProcessNsfwMessage(SocketMessage m)
         {
             if (m.Author.IsBot) return;
             if ((m.Attachments.Count > 0) && m.Attachments.First().Filename.StartsWith("SPOILER_")) return;
 
             var CurrentChannel = m.Channel;
             string NewContent = m.Content.Replace("!nsfw", "").Replace("!ns", "");
+
+            string builder = "Nguyên văn từ " +
+                "<@" +
+                m.Author.Id +
+                "> : " +
+                NewContent;
+
+            // Compose message
+            Attachment MsgAttachment = m.Attachments.First();
+            if (m.Attachments.Count > 0 && MsgAttachment != null)
+            {
+                var ImgStream = URLUtils.GetStreamFromUrl(MsgAttachment.Url);
+
+                await CurrentChannel.SendFileAsync(ImgStream, "SPOILER_" + MsgAttachment.Filename, text: builder, false, null, null, true);
+                // CurrentChannel.SendMessageAsync(builder, false, null, new RequestOptions());
+            }
         }
 
         public void PrintOut(SocketMessage msg)

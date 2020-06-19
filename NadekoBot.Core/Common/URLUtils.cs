@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Net;
 using System.Text.RegularExpressions;
 
@@ -49,6 +50,16 @@ namespace NadekoBot.Core.Common
                 // Code...
                 return false;
             }
+        }
+
+        public static Stream GetStreamFromUrl(string url)
+        {
+            byte[] imageData = null;
+
+            using (var wc = new WebClient())
+                imageData = wc.DownloadData(url);
+
+            return new MemoryStream(imageData);
         }
     }
 }
