@@ -50,7 +50,7 @@ namespace NadekoBot.Core.Services
             return dc.Name != null && dc.Name.Equals("nsfw") && dc.Value < SFW_THRESHOLD;
         }
 
-        public async void HandlePotentialNsfwMessage(SocketMessage msg)
+        public void HandlePotentialNsfwMessage(SocketMessage msg)
         {
 
             string ExtractedUrl = URLUtils.ExtractUrl(msg.Content);
@@ -62,14 +62,17 @@ namespace NadekoBot.Core.Services
 
             if (msg.Content.StartsWith("!nsfw") || msg.Content.StartsWith("!ns"))
             {
-                await ProcessNsfwMessage(msg);
+                ProcessNsfwMessage(msg);
+                return;
             }
 
             if (URLUtils.IsImageUrl(ExtractedUrl))
             {
-            
+                ProcessNsfwImageLink(ExtractedUrl, msg);
+                return;
             }
 
+            ProcessAttachment(msg);
         }
 
         public void ProcessNsfwImageLink(String link, SocketMessage m)
@@ -95,7 +98,7 @@ namespace NadekoBot.Core.Services
             }
         }
 
-        public async void ProcessAttachment(SocketMessage m)
+        public void ProcessAttachment(SocketMessage m)
         {
             bool IsGeneralChannel = false;
             if (!IsGeneralChannel) return;
@@ -110,12 +113,12 @@ namespace NadekoBot.Core.Services
 
                 if (IsNsfwImage(attachment.Url))
                 {
-                    await ProcessNsfwMessage(m);
+                    ProcessNsfwMessage(m);
                 }
             }
         }
 
-        public async Task ProcessNsfwMessage(SocketMessage m)
+        public void ProcessNsfwMessage(SocketMessage m)
         {
             if (m.Author.IsBot) return;
             if ((m.Attachments.Count > 0) && m.Attachments.First().Filename.StartsWith("SPOILER_")) return;
@@ -135,8 +138,7 @@ namespace NadekoBot.Core.Services
             {
                 var ImgStream = URLUtils.GetStreamFromUrl(MsgAttachment.Url);
 
-                await CurrentChannel.SendFileAsync(ImgStream, "SPOILER_" + MsgAttachment.Filename, text: builder, false, null, null, true);
-                // CurrentChannel.SendMessageAsync(builder, false, null, new RequestOptions());
+                CurrentChannel.SendFileAsync(ImgStream, "SPOILER_" + MsgAttachment.Filename, text: builder, false, null, null, true).ConfigureAwait(false);
             }
         }
 
