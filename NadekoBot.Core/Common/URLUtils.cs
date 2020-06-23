@@ -45,7 +45,7 @@ namespace NadekoBot.Core.Common
                 return resp.ContentType.ToLower(CultureInfo.InvariantCulture)
                            .StartsWith("image/");
             }
-            catch (WebException)
+            catch
             {
                 // Code...
                 return false;

@@ -13,7 +13,7 @@ namespace NadekoBot.Modules.NsfwCensor
 
         private readonly ClarifaiService _clarifaiService;
 
-        private static Logger _log = LogManager.GetCurrentClassLogger();
+        private static Logger _log;
 
         private readonly IBotCredentials _creds;
 
@@ -22,6 +22,7 @@ namespace NadekoBot.Modules.NsfwCensor
             _client = client;
             _clarifaiService = clarifaiService;
             _client.MessageReceived += OnMessageReceived;
+            _log = LogManager.GetCurrentClassLogger();
         }
 
         private Task OnMessageReceived(SocketMessage arg)
