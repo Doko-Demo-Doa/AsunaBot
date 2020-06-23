@@ -25,6 +25,7 @@ namespace NadekoBot.Core.Services.Impl
         public string OsuApiKey { get; }
         public string CleverbotApiKey { get; }
         public string ClarifaiKey { get; }
+        public ulong GeneralChannelId { get; }
         public RestartConfig RestartCommand { get; }
         public DBConfig Db { get; }
         public int TotalShards { get; }
@@ -81,6 +82,7 @@ namespace NadekoBot.Core.Services.Impl
                 ShardRunArguments = data[nameof(ShardRunArguments)];
                 CleverbotApiKey = data[nameof(CleverbotApiKey)];
                 ClarifaiKey = data[nameof(ClarifaiKey)];
+                GeneralChannelId = Convert.ToUInt64(data[nameof(GeneralChannelId)]);
                 MiningProxyUrl = data[nameof(MiningProxyUrl)];
                 MiningProxyCreds = data[nameof(MiningProxyCreds)];
                 if (!string.IsNullOrWhiteSpace(data[nameof(RedisOptions)]))

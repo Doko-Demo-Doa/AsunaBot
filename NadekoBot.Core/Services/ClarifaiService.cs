@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
 using Clarifai.API;
 using Clarifai.DTOs.Inputs;
 using Clarifai.DTOs.Predictions;
@@ -10,7 +9,6 @@ using Discord;
 using Discord.WebSocket;
 using NadekoBot.Core.Common;
 using NLog;
-using SixLabors.ImageSharp;
 
 namespace NadekoBot.Core.Services
 {
@@ -92,7 +90,8 @@ namespace NadekoBot.Core.Services
                     CurrentChannel.SendMessageAsync(builder).ConfigureAwait(false);
                     m.DeleteAsync().ConfigureAwait(false);
                 }
-            } catch (WebException)
+            }
+            catch (WebException)
             {
                 // Code...
             }
@@ -100,7 +99,7 @@ namespace NadekoBot.Core.Services
 
         public void ProcessAttachment(SocketMessage m)
         {
-            bool IsGeneralChannel = false;
+            bool IsGeneralChannel = (m.Channel.Id == _creds.GeneralChannelId);
             if (!IsGeneralChannel) return;
 
             if (m.Attachments.Count < 1) return;
@@ -108,7 +107,7 @@ namespace NadekoBot.Core.Services
 
             foreach (Attachment attachment in m.Attachments)
             {
-                if (URLUtils.IsImageUrl(attachment.Url)) return;
+                if (!URLUtils.IsImageUrl(attachment.Url)) return;
                 if (attachment.Filename.StartsWith("SPOILER_")) return;
 
                 if (IsNsfwImage(attachment.Url))
@@ -139,12 +138,8 @@ namespace NadekoBot.Core.Services
                 var ImgStream = URLUtils.GetStreamFromUrl(MsgAttachment.Url);
 
                 CurrentChannel.SendFileAsync(ImgStream, "SPOILER_" + MsgAttachment.Filename, text: builder, false, null, null, true).ConfigureAwait(false);
+                m.DeleteAsync();
             }
-        }
-
-        public void PrintOut(SocketMessage msg)
-        {
-            _log.Error(msg.Content);
         }
     }
 }
