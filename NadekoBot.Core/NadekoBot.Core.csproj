@@ -47,6 +47,7 @@
     <Folder Include="Modules\Gambling\Common\CurrencyEvents\" />
     <Folder Include="Modules\Bet\" />
     <Folder Include="Modules\NsfwCensor\" />
+    <Folder Include="Modules\PinMessage\" />
   </ItemGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'GlobalNadeko' ">

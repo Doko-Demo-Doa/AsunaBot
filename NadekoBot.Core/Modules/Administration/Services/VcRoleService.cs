@@ -163,10 +163,13 @@ namespace NadekoBot.Modules.Administration.Services
         private Task ClientOnUserVoiceStateUpdated(SocketUser usr, SocketVoiceState oldState,
             SocketVoiceState newState)
         {
-
             var gusr = usr as SocketGuildUser;
             if (gusr == null)
                 return Task.CompletedTask;
+
+            // if (newState.IsStreaming) {
+            //     // gusr.AddRoleAsync
+            // }
 
             var oldVc = oldState.VoiceChannel;
             var newVc = newState.VoiceChannel;
