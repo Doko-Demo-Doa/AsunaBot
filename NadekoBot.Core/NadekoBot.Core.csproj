@@ -49,6 +49,7 @@
     <Folder Include="Modules\Bet\" />
     <Folder Include="Modules\NsfwCensor\" />
     <Folder Include="Modules\PinMessage\" />
+    <Folder Include="Modules\StreamingDetector\" />
   </ItemGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'GlobalNadeko' ">
