@@ -12,7 +12,7 @@ namespace NadekoBot.Core.Modules.PinMessage
     public class PinMessage : NadekoTopLevelModule
     {
         private readonly DiscordSocketClient _client;
-        private readonly int PIN_THRESHOLD = 1;
+        private readonly int PIN_THRESHOLD = 3;
         private readonly string PIN_EMOTE = "\uD83D\uDCCC";
 
         private static Logger _log;
