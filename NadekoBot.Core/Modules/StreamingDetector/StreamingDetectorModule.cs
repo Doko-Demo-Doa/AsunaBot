@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
 using NadekoBot.Core.Services;
 using NadekoBot.Modules;
@@ -18,21 +20,20 @@ namespace NadekoBot.Core.Modules.StreamingDetector
             _client.UserVoiceStateUpdated += OnVoiceStateUpdated;
         }
 
+        [RequireContext(ContextType.Guild)]
         private async Task OnVoiceStateUpdated(SocketUser usr, SocketVoiceState oldState, SocketVoiceState newState)
         {
+            ulong RoleId = _creds.StreamingRoleId;
+            var user = (IGuildUser)usr;
+            var Role = user.Guild.GetRole(RoleId);
+
             if (newState.IsStreaming)
             {
-                ulong RoleId = _creds.StreamingRoleId;
-                var Role = Context.Guild.GetRole(RoleId);
-
-                if (!oldState.IsStreaming && newState.IsStreaming)
-                {
-                    await ((SocketGuildUser)Context.User).AddRoleAsync(Role);
-                }
-                if (oldState.IsStreaming && !newState.IsStreaming)
-                {
-                    await ((SocketGuildUser)Context.User).RemoveRoleAsync(Role);
-                }
+                await user.AddRoleAsync(Role);
+            }
+            else
+            {
+                await user.RemoveRoleAsync(Role);
             }
         }
     }
