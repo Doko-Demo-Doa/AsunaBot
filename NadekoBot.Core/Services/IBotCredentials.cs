@@ -26,6 +26,7 @@ namespace NadekoBot.Core.Services
         string CleverbotApiKey { get; }
         string ClarifaiKey { get; }
         ulong GeneralChannelId { get; }
+        ulong StreamingRoleId { get; }
         RestartConfig RestartCommand { get; }
         string MiningProxyUrl { get; }
         string MiningProxyCreds { get; }
