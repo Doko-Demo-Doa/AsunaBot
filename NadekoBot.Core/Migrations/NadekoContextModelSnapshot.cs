@@ -1469,6 +1469,25 @@ namespace NadekoBot.Core.Migrations
                     b.ToTable("PollVote");
                 });
 
+            modelBuilder.Entity("NadekoBot.Core.Services.Database.Models.PostTracking", b =>
+                {
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Channel")
+                        .HasColumnType("text");
+
+                    b.Property<decimal>("UserId")
+                        .HasColumnType("numeric(20,0)");
+
+                    b.Property<long>("Score")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Date", "Channel", "UserId");
+
+                    b.ToTable("PostTracking");
+                });
+
             modelBuilder.Entity("NadekoBot.Core.Services.Database.Models.Quote", b =>
                 {
                     b.Property<int>("Id")

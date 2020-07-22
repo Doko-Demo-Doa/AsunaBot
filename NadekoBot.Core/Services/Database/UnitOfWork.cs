@@ -60,6 +60,10 @@ namespace NadekoBot.Core.Services.Database
         private IRoleInventoryRepository _roleInventory;
         public IRoleInventoryRepository RoleInventory => _roleInventory ?? (_roleInventory = new RoleInventoryRepository(_context));
 
+        private IPostTrackingRepository _posttrackingRepository;
+        public IPostTrackingRepository PostTracking => _posttrackingRepository ?? (_posttrackingRepository = new PostTrackingRepository(_context));
+
+
         public UnitOfWork(NadekoContext context)
         {
             _context = context;

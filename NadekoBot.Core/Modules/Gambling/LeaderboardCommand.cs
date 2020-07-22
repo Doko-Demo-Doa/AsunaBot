@@ -42,7 +42,7 @@ namespace NadekoBot.Modules.Gambling
                         resName = "gambling_top_alltimespent";
                         break;
                     case LeaderboardCommandType.Monthly:
-                        list = await _lb.GetTop(LeaderboardType.Gambling, LeaderboardTimeType.AllTime, DateTime.MinValue, 0, 10);
+                        list = await _lb.GetTop(LeaderboardType.Gambling, LeaderboardTimeType.Monthly, DateTime.MinValue, 0, 10);
                         resName = "gambling_top_monthly";
                         break;
                     default:

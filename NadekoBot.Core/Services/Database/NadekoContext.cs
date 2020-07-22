@@ -83,6 +83,7 @@ namespace NadekoBot.Core.Services.Database
         public DbSet<Leaderboard> Leaderboards { get; set; }
         public DbSet<VLeaderboard> VLeaderboards { get; set; }
         public DbSet<RoleInventory> RoleInventories { get; set; }
+        public DbSet<PostTracking> PostTrackings { get; set; }
 
         public NadekoContext() : base()
         {
@@ -90,7 +91,7 @@ namespace NadekoBot.Core.Services.Database
         }
 
         public NadekoContext(DbContextOptions<NadekoContext> options) : base(options)
-        {            
+        {
         }
 
         public void EnsureSeedData()
@@ -387,9 +388,14 @@ namespace NadekoBot.Core.Services.Database
                 .HasNoKey();
             #endregion
 
-            #region
+            #region RoleInventory
             modelBuilder.Entity<RoleInventory>()
                 .HasKey(k => new { k.UserId, k.RoleId });
+            #endregion
+
+            #region PostTracking
+            modelBuilder.Entity<PostTracking>()
+                .HasKey(k => new { k.Date, k.Channel, k.UserId });
             #endregion
         }
     }

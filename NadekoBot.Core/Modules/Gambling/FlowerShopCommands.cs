@@ -104,6 +104,24 @@ namespace NadekoBot.Modules.Gambling
 
             [NadekoCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
+            public async Task RoleEnable ()
+            {
+                var roleInv = await _ri.GetAsync(ctx.User.Id);
+                List<string> list = new List<string>();
+                foreach (var roleId in roleInv)
+                {
+                    var role = ctx.Guild.GetRole(roleId);
+                    if (role != null)
+                    {
+                        list.Add(role.Name);
+                    }
+                }
+                var role = ctx.Guild.GetRole(entry.RoleId);
+                await ctx.Channel.SendMessageAsync($"You have role(s): {string.Join(',', list)}");
+            }
+
+            [NadekoCommand, Usage, Description, Aliases]
+            [RequireContext(ContextType.Guild)]
             public async Task Buy(int index)
             {
                 index -= 1;
@@ -141,7 +159,7 @@ namespace NadekoBot.Modules.Gambling
                     {
                         try
                         {
-                            await guser.AddRoleAsync(role).ConfigureAwait(false);                            
+                            await guser.AddRoleAsync(role).ConfigureAwait(false);
                         }
                         catch (Exception ex)
                         {

@@ -25,6 +25,7 @@ namespace NadekoBot.Core.Services.Database
         IPlantedCurrencyRepository PlantedCurrency { get; }
         ILeaderboardRepository Leaderboards { get;  }
         IRoleInventoryRepository RoleInventory { get; }
+        IPostTrackingRepository PostTracking { get; }
 
         int SaveChanges();
         Task<int> SaveChangesAsync();
