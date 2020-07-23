@@ -15,16 +15,12 @@ namespace NadekoBot.Core.Services.Database.Repositories.Impl
 
         public void EnsureCreated(ulong userId, string username, string discrim, string avatarId)
         {
-            _context.Database.ExecuteSqlCommand($@"
-UPDATE OR IGNORE DiscordUser 
-SET Username={username},
-    Discriminator={discrim},
-    AvatarId={avatarId}
-WHERE UserId={userId};
-
-INSERT OR IGNORE INTO DiscordUser (UserId, Username, Discriminator, AvatarId)
-VALUES ({userId}, {username}, {discrim}, {avatarId});
-");
+            var str = $@"INSERT INTO ""DiscordUsers"" (""UserId"", ""Username"", ""Discriminator"", ""AvatarId"")
+                VALUES ({userId}, '{username}', '{discrim}', '{avatarId}') ON CONFLICT (""UserId"") DO UPDATE SET ""Username""='{username}',
+                    ""Discriminator""='{discrim}',
+                    ""AvatarId""='{avatarId}'
+                    WHERE ""DiscordUsers"".""UserId""={userId}";
+            _context.Database.ExecuteSqlRaw(str);
         }
 
         //temp is only used in updatecurrencystate, so that i don't overwrite real usernames/discrims with Unknown
@@ -94,20 +90,20 @@ VALUES ({userId}, {username}, {discrim}, {avatarId});
             // and return number of rows > 0 (was there a change)
             if (amount < 0 && !allowNegative)
             {
-                var rows = _context.Database.ExecuteSqlCommand($@"
-UPDATE DiscordUser
-SET CurrencyAmount=CurrencyAmount+{amount}
-WHERE UserId={userId} AND CurrencyAmount>={-amount};");
+                var rows = _context.Database.ExecuteSqlRaw($@"
+UPDATE ""DiscordUsers""
+SET ""CurrencyAmount""=""CurrencyAmount""+{amount}
+WHERE ""UserId""={userId} AND ""CurrencyAmount"">={-amount};");
                 return rows > 0;
             }
 
             // if remove and negative is allowed, just remove without any condition
             if (amount < 0 && allowNegative)
             {
-                var rows = _context.Database.ExecuteSqlCommand($@"
-UPDATE DiscordUser
-SET CurrencyAmount=CurrencyAmount+{amount}
-WHERE UserId={userId};");
+                var rows = _context.Database.ExecuteSqlRaw($@"
+UPDATE ""DiscordUsers""
+SET ""CurrencyAmount""=""CurrencyAmount""+{amount}
+WHERE ""UserId""={userId};");
                 return rows > 0;
             }
 
@@ -122,27 +118,19 @@ WHERE UserId={userId};");
             // just update the amount, there is no new user data
             if (!updatedUserData)
             {
-                _context.Database.ExecuteSqlCommand($@"
-UPDATE OR IGNORE DiscordUser 
-SET CurrencyAmount=CurrencyAmount+{amount}
-WHERE UserId={userId};
-
-INSERT OR IGNORE INTO DiscordUser (UserId, Username, Discriminator, AvatarId, CurrencyAmount)
-VALUES ({userId}, {name}, {discrim}, {avatarId}, {amount});
+                _context.Database.ExecuteSqlRaw($@"INSERT INTO ""DiscordUsers"" (""UserId"", ""Username"", ""Discriminator"", ""AvatarId"", ""CurrencyAmount"")
+VALUES ({userId}, '{name}', '{discrim}', '{avatarId}', {amount}) ON CONFLICT(""UserId"") DO UPDATE SET ""CurrencyAmount""=""DiscordUsers"".""CurrencyAmount""+{amount}
+WHERE ""DiscordUsers"".""UserId""={userId};
 ");
             }
             else
             {
-                _context.Database.ExecuteSqlCommand($@"
-UPDATE OR IGNORE DiscordUser 
-SET CurrencyAmount=CurrencyAmount+{amount},
-    Username={name},
-    Discriminator={discrim},
-    AvatarId={avatarId}
-WHERE UserId={userId};
-
-INSERT OR IGNORE INTO DiscordUser (UserId, Username, Discriminator, AvatarId, CurrencyAmount)
-VALUES ({userId}, {name}, {discrim}, {avatarId}, {amount});
+                _context.Database.ExecuteSqlRaw($@"INSERT INTO ""DiscordUsers"" (""UserId"", ""Username"", ""Discriminator"", ""AvatarId"", ""CurrencyAmount"")
+VALUES ({userId}, '{name}', '{discrim}', '{avatarId}', {amount}) ON CONFLICT (""UserId"") DO UPDATE SET ""CurrencyAmount""=""DiscordUsers"".""CurrencyAmount""+{amount},
+    ""Username""='{name}',
+    ""Discriminator""='{discrim}',
+    ""AvatarId""='{avatarId}'
+WHERE ""DiscordUsers"".""UserId""={userId};
 ");
             }
             return true;
@@ -150,10 +138,10 @@ VALUES ({userId}, {name}, {discrim}, {avatarId}, {amount});
 
         public void CurrencyDecay(float decay, ulong botId)
         {
-            _context.Database.ExecuteSqlCommand($@"
-UPDATE DiscordUser
-SET CurrencyAmount=CurrencyAmount-ROUND(CurrencyAmount*{decay}-0.5)
-WHERE CurrencyAmount>0 AND UserId!={botId};");
+            _context.Database.ExecuteSqlRaw($@"
+UPDATE ""DiscordUsers""
+SET ""CurrencyAmount""=""CurrencyAmount""-ROUND(""CurrencyAmount""*{decay}-0.5)
+WHERE ""CurrencyAmount"">0 AND ""UserId""!={botId};");
         }
 
         public long GetCurrencyDecayAmount(float decay)

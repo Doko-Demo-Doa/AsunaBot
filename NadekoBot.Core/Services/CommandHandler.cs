@@ -34,6 +34,7 @@ namespace NadekoBot.Core.Services
         private readonly Logger _log;
         private readonly IBotCredentials _creds;
         private readonly NadekoBot _bot;
+        private TrackingService _tracking;
         private IServiceProvider _services;
         private IEnumerable<IEarlyBehavior> _earlyBehaviors;
         private IEnumerable<IInputTransformer> _inputTransformers;
@@ -55,7 +56,7 @@ namespace NadekoBot.Core.Services
 
         public CommandHandler(DiscordSocketClient client, DbService db,
             IBotConfigProvider bcp, CommandService commandService,
-            IBotCredentials credentials, NadekoBot bot, IServiceProvider services)
+            IBotCredentials credentials, NadekoBot bot, IServiceProvider services, TrackingService trackingService)
         {
             _client = client;
             _commandService = commandService;
@@ -64,6 +65,7 @@ namespace NadekoBot.Core.Services
             _db = db;
             _bcp = bcp;
             _services = services;
+            _tracking = trackingService;
 
             _log = LogManager.GetCurrentClassLogger();
 
@@ -240,7 +242,9 @@ namespace NadekoBot.Core.Services
                 // track how many messagges each user is sending
                 UserMessagesSent.AddOrUpdate(usrMsg.Author.Id, 1, (key, old) => ++old);
 #endif
-
+                Console.WriteLine($"{usrMsg.Author.Username}#{usrMsg.Author.Discriminator} say: {usrMsg.Content} in channel {usrMsg.Channel.Name}");
+                await _tracking.TrackPost(usrMsg.Channel.Name, usrMsg.Id, 1);
+                
                 var channel = msg.Channel as ISocketMessageChannel;
                 var guild = (msg.Channel as SocketTextChannel)?.Guild;
 

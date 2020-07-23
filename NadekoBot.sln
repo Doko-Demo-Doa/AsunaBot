@@ -17,6 +17,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NadekoBot", "src\NadekoBot\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NadekoBot.Core", "NadekoBot.Core\NadekoBot.Core.csproj", "{A6CCEFBD-DCF2-482C-9643-47664683548F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQL Scripts", "SQL Scripts", "{4CC16A5A-45A9-4E26-9AED-E51D752D5854}"
+	ProjectSection(SolutionItems) = preProject
+		scripts.sql = scripts.sql
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

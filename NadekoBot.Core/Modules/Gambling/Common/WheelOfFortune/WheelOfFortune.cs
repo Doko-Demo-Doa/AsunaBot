@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using NadekoBot.Common;
 using NadekoBot.Core.Services;
+using NadekoBot.Core.Services.Database.Models;
 
 namespace NadekoBot.Modules.Gambling.Common.WheelOfFortune
 {
@@ -26,15 +27,17 @@ namespace NadekoBot.Modules.Gambling.Common.WheelOfFortune
 
         private readonly NadekoRandom _rng;
         private readonly ICurrencyService _cs;
+        private readonly ILeaderboardService _lb;
         private readonly long _bet;
         private readonly ulong _userId;
 
-        public WheelOfFortuneGame(ulong userId, long bet, ICurrencyService cs)
+        public WheelOfFortuneGame(ulong userId, long bet, ICurrencyService cs, ILeaderboardService lb)
         {
             _rng = new NadekoRandom();
             _cs = cs;
             _bet = bet;
             _userId = userId;
+            _lb = lb;
         }
 
         public async Task<Result> SpinAsync()
@@ -44,7 +47,13 @@ namespace NadekoBot.Modules.Gambling.Common.WheelOfFortune
             var amount = (long)(_bet * Multipliers[result]);
 
             if (amount > 0)
+            {
                 await _cs.AddAsync(_userId, "Wheel Of Fortune - won", amount, gamble: true).ConfigureAwait(false);
+                await _lb.AddAsync(_userId, LeaderboardType.Wheel, LeaderboardTimeType.AllTime, amount);
+                await _lb.AddAsync(_userId, LeaderboardType.Gambling, LeaderboardTimeType.AllTime, amount);
+                await _lb.AddAsync(_userId, LeaderboardType.Gambling, LeaderboardTimeType.Monthly, amount);
+            }
+                
 
             return new Result
             {

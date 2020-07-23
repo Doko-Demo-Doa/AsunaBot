@@ -11,25 +11,50 @@ using System.Linq;
 
 namespace NadekoBot.Core.Services.Database
 {
-    public class NadekoContextFactory : IDesignTimeDbContextFactory<NadekoContext>
-    {
-        public NadekoContext CreateDbContext(string[] args)
-        {
-            var optionsBuilder = new DbContextOptionsBuilder<NadekoContext>();
-            IBotCredentials creds = new BotCredentials();
-            var builder = new SqliteConnectionStringBuilder(creds.Db.ConnectionString);
-            builder.DataSource = Path.Combine(AppContext.BaseDirectory, builder.DataSource);
-            optionsBuilder.UseSqlite(builder.ToString());
-            var ctx = new NadekoContext(optionsBuilder.Options);
-            ctx.Database.SetCommandTimeout(60);
-            return ctx;
-        }
-    }
+    //public class NadekoContextFactory : IDesignTimeDbContextFactory<NadekoContext>
+    //{
+    //    public NadekoContext CreateDbContext(string[] args)
+    //    {
+    //        var optionsBuilder = new DbContextOptionsBuilder<NadekoContext>();
+    //        IBotCredentials creds = new BotCredentials();
+
+    //        //if (creds.Db.Type == "postgre")
+    //        {
+    //            optionsBuilder.UseNpgsql(creds.Db.ConnectionString);
+    //        }
+    //        //else
+    //        //{
+    //        //    var builder = new SqliteConnectionStringBuilder(creds.Db.ConnectionString);
+    //        //    builder.DataSource = Path.Combine(AppContext.BaseDirectory, builder.DataSource);
+    //        //    optionsBuilder.UseSqlite(builder.ToString());
+    //        //}
+
+    //        var ctx = new NadekoContext(optionsBuilder.Options);
+    //        ctx.Database.SetCommandTimeout(60);
+    //        return ctx;
+    //    }
+    //}
 
     public class NadekoContext : DbContext
     {
+        protected override void OnConfiguring(DbContextOptionsBuilder options)
+        {
+            //options.UseNpgsql("Server=localhost;Database=Asuna;User Id=postgres;Password=sa"); // uncomment this line and enter local database info if you want to use EF migrations
+        }
+
+        public static string DbType = "sqlite";
+
+        public static bool IsSqlite
+        {
+            get
+            {
+                return DbType == "sqlite";
+            }
+        }
+
         public DbSet<BotConfig> BotConfig { get; set; }
         public DbSet<GuildConfig> GuildConfigs { get; set; }
+        public DbSet<DiscordUser> DiscordUsers { get; set; }
 
         public DbSet<Quote> Quotes { get; set; }
         public DbSet<Reminder> Reminders { get; set; }
@@ -53,6 +78,17 @@ namespace NadekoBot.Core.Services.Database
         public DbSet<RewardedUser> RewardedUsers { get; set; }
         public DbSet<Stake> Stakes { get; set; }
         public DbSet<PlantedCurrency> PlantedCurrency { get; set; }
+
+        // extends
+        public DbSet<Leaderboard> Leaderboards { get; set; }
+        public DbSet<VLeaderboard> VLeaderboards { get; set; }
+        public DbSet<RoleInventory> RoleInventories { get; set; }
+        public DbSet<PostTracking> PostTrackings { get; set; }
+
+        public NadekoContext() : base()
+        {
+
+        }
 
         public NadekoContext(DbContextOptions<NadekoContext> options) : base(options)
         {
@@ -343,6 +379,23 @@ namespace NadekoBot.Core.Services.Database
                 .HasOne(x => x.GuildConfig)
                 .WithMany(x => x.SelfAssignableRoleGroupNames)
                 .IsRequired();
+            #endregion
+
+            #region Leaderboard
+            modelBuilder.Entity<Leaderboard>()
+                .HasKey(k => new { k.UserId, k.Type, k.TimeType, k.Date });
+            modelBuilder.Entity<VLeaderboard>().ToView("VLeaderboards")
+                .HasNoKey();
+            #endregion
+
+            #region RoleInventory
+            modelBuilder.Entity<RoleInventory>()
+                .HasKey(k => new { k.UserId, k.RoleId });
+            #endregion
+
+            #region PostTracking
+            modelBuilder.Entity<PostTracking>()
+                .HasKey(k => new { k.Date, k.Channel, k.UserId });
             #endregion
         }
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NadekoBot.Core.Services.Database.Models
 {
@@ -10,7 +11,7 @@ namespace NadekoBot.Core.Services.Database.Models
         public string AvatarId { get; set; }
         
         public ClubInfo Club { get; set; }
-        public bool IsClubAdmin { get; set; }
+        public bool IsClubAdmin { get; set; } = false;
 
         public int TotalXp { get; set; }
         public DateTime LastLevelUp { get; set; } = DateTime.UtcNow;
