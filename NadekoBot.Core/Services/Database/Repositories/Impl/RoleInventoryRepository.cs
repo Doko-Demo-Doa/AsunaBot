@@ -34,5 +34,10 @@ namespace NadekoBot.Core.Services.Database.Repositories.Impl
         {
             return _set.AsQueryable().Where(p => p.UserId == userId).Select(p => p.RoleId).ToArrayAsync();
         }
+
+        public Task<bool> IsRoleOwned(ulong roleId, ulong userId)
+        {
+            return _set.AsQueryable().AnyAsync(p => p.UserId == userId && p.RoleId == roleId);
+        }
     }
 }

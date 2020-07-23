@@ -9,5 +9,6 @@ namespace NadekoBot.Core.Services.Database.Repositories
     {
         Task<bool> AddAsync(ulong userId, ulong roleId);
         Task<ulong[]> GetAsync(ulong userId);
+        Task<bool> IsRoleOwned(ulong roleId, ulong userId);
     }
 }

@@ -96,28 +96,38 @@ namespace NadekoBot.Modules.Gambling
                     var role = ctx.Guild.GetRole(roleId);
                     if (role != null)
                     {
-                        list.Add(role.Name);
+                        list.Add($"<@&{role.Id}>");
                     }
                 }
+
                 await ctx.Channel.SendMessageAsync($"You have role(s): {string.Join(',', list)}");
             }
 
             [NadekoCommand, Usage, Description, Aliases]
             [RequireContext(ContextType.Guild)]
-            public async Task RoleEnable ()
+            public async Task RoleEnable(IRole role)
             {
                 var roleInv = await _ri.GetAsync(ctx.User.Id);
-                List<string> list = new List<string>();
-                foreach (var roleId in roleInv)
+                bool isOwnRole = await _ri.IsRoleOwned(role.Id, ctx.User.Id);
+
+                var guser = (IGuildUser)ctx.User;
+                if (isOwnRole)
                 {
-                    var role = ctx.Guild.GetRole(roleId);
-                    if (role != null)
+                    if (guser.GetRoles().Contains(role))
                     {
-                        list.Add(role.Name);
+                        await guser.RemoveRoleAsync(role).ConfigureAwait(false);
+                        await ctx.Channel.SendMessageAsync($"You have removed role: {role.Name}");
+                    }
+                    else
+                    {
+                        await guser.AddRoleAsync(role).ConfigureAwait(false);
+                        await ctx.Channel.SendMessageAsync($"You have added role: {role.Name}");
                     }
                 }
-                var role = ctx.Guild.GetRole(entry.RoleId);
-                await ctx.Channel.SendMessageAsync($"You have role(s): {string.Join(',', list)}");
+                else
+                {
+                    await ctx.Channel.SendMessageAsync($"You don't own this role");
+                }
             }
 
             [NadekoCommand, Usage, Description, Aliases]
@@ -172,7 +182,7 @@ namespace NadekoBot.Modules.Gambling
                         var profit = GetProfitAmount(entry.Price);
                         await _cs.AddAsync(entry.AuthorId, $"Shop sell item - {entry.Type}", profit).ConfigureAwait(false);
                         await _cs.AddAsync(ctx.Client.CurrentUser.Id, $"Shop sell item - cut", entry.Price - profit).ConfigureAwait(false);
-                        await _lb.AddAsync(ctx.User.Id, LeaderboardType.GamblingSpent, LeaderboardTimeType.AllTime, entry.Price);                        
+                        await _lb.AddAsync(ctx.User.Id, LeaderboardType.GamblingSpent, LeaderboardTimeType.AllTime, entry.Price);
                         await ReplyConfirmLocalizedAsync("shop_role_purchase", Format.Bold(role.Name)).ConfigureAwait(false);
                         return;
                     }
@@ -272,7 +282,7 @@ namespace NadekoBot.Modules.Gambling
                     {
                         entry
                     };
-                    uow.GuildConfigs.ForId(ctx.Guild.Id, set => set).ShopEntries = entries;                    
+                    uow.GuildConfigs.ForId(ctx.Guild.Id, set => set).ShopEntries = entries;
                     uow.SaveChanges();
                     List<ulong> roleForSales = JsonConvert.DeserializeObject<List<ulong>>(_bc.BotConfig.RoleForSale);
                     if (!roleForSales.Contains(role.Id))

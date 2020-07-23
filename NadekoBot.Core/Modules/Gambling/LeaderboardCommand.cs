@@ -35,15 +35,15 @@ namespace NadekoBot.Modules.Gambling
                 {
                     case LeaderboardCommandType.AllTime:
                         list = await _lb.GetTop(LeaderboardType.Gambling, LeaderboardTimeType.AllTime, DateTime.MinValue, 0, 10);
-                        resName = "gambling_top_alltime";
+                        resName = "top_alltime";
                         break;
                     case LeaderboardCommandType.AllTimeSpent:
                         list = await _lb.GetTop(LeaderboardType.GamblingSpent, LeaderboardTimeType.AllTime, DateTime.MinValue, 0, 10);
-                        resName = "gambling_top_alltimespent";
+                        resName = "top_alltimespent";
                         break;
                     case LeaderboardCommandType.Monthly:
                         list = await _lb.GetTop(LeaderboardType.Gambling, LeaderboardTimeType.Monthly, DateTime.MinValue, 0, 10);
-                        resName = "gambling_top_monthly";
+                        resName = "top_monthly";
                         break;
                     default:
                         list = new List<VLeaderboard>();
@@ -60,9 +60,9 @@ namespace NadekoBot.Modules.Gambling
                     var x = list[i];
                     var usrStr = x.Username.ToString().TrimTo(20, true);
 
-                    embed.AddField(efb => efb.WithName("#" + i + " " + usrStr)
+                    embed.AddField(efb => efb.WithName("#" + (i + 1) + " " + usrStr)
                                              .WithValue(x.Score.ToString("N0") + " " + CurrencySign)
-                                             .WithIsInline(true));                    
+                                             .WithIsInline(true));
                 }
 
                 await ctx.Channel.EmbedAsync(embed).ConfigureAwait(false);
