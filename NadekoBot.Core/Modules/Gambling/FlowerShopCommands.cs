@@ -100,7 +100,7 @@ namespace NadekoBot.Modules.Gambling
                     }
                 }
 
-                await ctx.Channel.SendMessageAsync($"You have role(s): {string.Join(',', list)}");
+                await ctx.Channel.SendMessageAsync($"You have role(s): {string.Join(',', list)}").ConfigureAwait(false);
             }
 
             [NadekoCommand, Usage, Description, Aliases]
@@ -116,17 +116,17 @@ namespace NadekoBot.Modules.Gambling
                     if (guser.GetRoles().Contains(role))
                     {
                         await guser.RemoveRoleAsync(role).ConfigureAwait(false);
-                        await ctx.Channel.SendMessageAsync($"You have removed role: {role.Name}");
+                        await ctx.Channel.SendMessageAsync($"You have removed role: {role.Name}").ConfigureAwait(false);
                     }
                     else
                     {
                         await guser.AddRoleAsync(role).ConfigureAwait(false);
-                        await ctx.Channel.SendMessageAsync($"You have added role: {role.Name}");
+                        await ctx.Channel.SendMessageAsync($"You have added role: {role.Name}").ConfigureAwait(false);
                     }
                 }
                 else
                 {
-                    await ctx.Channel.SendMessageAsync($"You don't own this role");
+                    await ctx.Channel.SendMessageAsync($"You don't own this role").ConfigureAwait(false);
                 }
             }
 
